@@ -24,9 +24,15 @@ public interface Support {
                 n -> source.subList(n * length, n == fullChunks ? size : (n + 1) * length));
     }
 
-    String readString(int day) throws Exception;
+    default String readString(int day) throws Exception {
+        return "";
+    };
 
-    List<String> readLines(int day) throws Exception;
+    default List<String> readLines(int day) throws Exception {
+        return List.of();
+    };
 
-    boolean includeSlow();
+    default boolean includeSlow() {
+        return true;
+    };
 }
