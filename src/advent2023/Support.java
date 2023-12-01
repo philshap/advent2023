@@ -26,13 +26,13 @@ public interface Support {
 
     default String readString(int day) throws Exception {
         return "";
-    };
+    }
 
     default List<String> readLines(int day) throws Exception {
         return List.of();
-    };
+    }
 
     default boolean includeSlow() {
         return true;
-    };
+    }
 }
