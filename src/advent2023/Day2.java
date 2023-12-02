@@ -27,12 +27,6 @@ public class Day2 implements Day {
             }
             return new Turn(cubes);
         }
-
-        static Map<String, Integer> MAX = Map.of("red", 12, "green", 13, "blue", 14);
-
-        public boolean valid() {
-            return cubes.entrySet().stream().allMatch(cube -> cube.getValue() <= MAX.get(cube.getKey()));
-        }
     }
 
     record Game(int id, List<Turn> turns) {
@@ -48,16 +42,20 @@ public class Day2 implements Day {
             return new Game(0, List.of());
         }
 
+        private Map<String, Integer> maxColors() {
+            return turns.stream().flatMap(turn -> turn.cubes.entrySet().stream())
+                    .collect(Collectors.toMap(Entry::getKey, Entry::getValue, Math::max));
+        }
+
+        static Map<String, Integer> MAX = Map.of("red", 12, "green", 13, "blue", 14);
         // Part 1
         boolean valid() {
-            return turns.stream().allMatch(Turn::valid);
+            return maxColors().entrySet().stream().allMatch(cube -> cube.getValue() <= MAX.get(cube.getKey()));
         }
 
         // Part 2
         int getPower() {
-            return turns.stream().flatMap(turn -> turn.cubes.entrySet().stream())
-                    .collect(Collectors.toMap(Entry::getKey, Entry::getValue, Math::max))
-                    .values().stream().reduce(1, (i, j) -> i * j);
+            return maxColors().values().stream().reduce(1, (i, j) -> i * j);
         }
     }
 
