@@ -10,10 +10,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Day2 implements Day {
-    public void run(Support support) throws Exception {
-        var input = support.readLines(2);
-        part1(input);
-        part2(input);
+
+    @Override
+    public int number() {
+        return 2;
     }
 
     record Turn(Map<String, Integer> cubes) {
@@ -61,27 +61,25 @@ public class Day2 implements Day {
         }
     }
 
-    private void part1(List<String> input) {
+    public String part1(List<String> input) {
         int sum = input.stream().map(Game::fromLine).filter(Game::valid).mapToInt(Game::id).sum();
-        System.out.printf("day 2 part 1: %s%n", sum);
+        return String.valueOf(sum);
     }
 
-    private void part2(List<String> input) {
+    @Override
+    public String part2(List<String> input) {
         int sum = input.stream().map(Game::fromLine).mapToInt(Game::getPower).sum();
-        System.out.printf("day 2 part 2: %s%n", sum);
+        return String.valueOf(sum);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Day day = new Day2();
-        day.run(new Support() {
-            @Override
-            public List<String> readLines(int day) {
-                return List.of("Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green",
-                        "Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue",
-                        "Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red",
-                        "Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red",
-                        "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green");
-            }
-        });
+        List<String> input = List.of("Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green",
+                "Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue",
+                "Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red",
+                "Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red",
+                "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green");
+        System.out.println(day.part1(input));
+        System.out.println(day.part2(input));
     }
 }

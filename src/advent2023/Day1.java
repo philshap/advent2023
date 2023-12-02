@@ -1,14 +1,14 @@
 package advent2023;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.IntStream;
 
 public class Day1 implements Day {
 
-    public void run(Support support) throws Exception {
-        var input = support.readLines(1);
-        part1(input);
-        part2(input);
+    @Override
+    public int number() {
+        return 1;
     }
 
     record Match(int index, int value) {
@@ -46,9 +46,9 @@ public class Day1 implements Day {
         return tens * 10 + ones;
     }
 
-    private void part1(List<String> input) {
+    public String part1(List<String> input) {
         int total = input.stream().mapToInt(this::calibrationValue).sum();
-        System.out.printf("day 1 part 1: %s%n", total);
+        return String.valueOf(total);
     }
 
     static final List<String> NAMES = List.of("one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
@@ -63,18 +63,14 @@ public class Day1 implements Day {
         return tens * 10 + ones;
     }
 
-    private void part2(List<String> input) {
+    public String part2(List<String> input) {
         int total = input.stream().mapToInt(this::calibrationValue2).sum();
-        System.out.printf("day 1 part 2: %s%n", total);
+        return String.valueOf(total);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Day day = new Day1();
-        day.run(new Support() {
-            @Override
-            public List<String> readLines(int day) {
-                return List.of("two1nine", "eightwothree", "abcone2threexyz", "xtwone3four", "4nineeightseven2", "zoneight234", "7pqrstsixteen");
-            }
-        });
+        System.out.println(day.part1(List.of("1abc2", "pqr3stu8vwx", "a1b2c3d4e5f", "treb7uchet")));
+        System.out.println(day.part2(List.of("two1nine", "eightwothree", "abcone2threexyz", "xtwone3four", "4nineeightseven2", "zoneight234", "7pqrstsixteen")));
     }
 }

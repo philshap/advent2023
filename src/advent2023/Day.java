@@ -1,5 +1,9 @@
 package advent2023;
 
+import java.util.List;
+
 public interface Day {
-    void run(Support support) throws Exception;
+    int number();
+    String part1(List<String> input);
+    String part2(List<String> input);
 }
