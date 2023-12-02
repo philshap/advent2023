@@ -4,8 +4,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Day2 implements Day {
     public void run(Support support) throws Exception {
@@ -14,23 +16,22 @@ public class Day2 implements Day {
         part2(input);
     }
 
-    static final String RED = "red";
-    static final String GREEN = "green";
-    static final String BLUE = "blue";
-    record Turn(Map<String, Integer> colors) {
+    record Turn(Map<String, Integer> cubes) {
         static Pattern PATTERN = Pattern.compile("(\\d+) (red|green|blue)");
 
         static Turn fromLine(String line) {
-            Map<String, Integer> colors = new HashMap<>();
+            Map<String, Integer> cubes = new HashMap<>();
             Matcher matcher = PATTERN.matcher(line);
             while (matcher.find()) {
-                colors.put(matcher.group(2), Integer.parseInt(matcher.group(1)));
+                cubes.put(matcher.group(2), Integer.parseInt(matcher.group(1)));
             }
-            return new Turn(colors);
+            return new Turn(cubes);
         }
 
-        public boolean valid(Map<String, Integer> max) {
-            return colors.keySet().stream().allMatch(color -> colors.get(color) <= max.get(color));
+        static Map<String, Integer> MAX = Map.of("red", 12, "green", 13, "blue", 14);
+
+        public boolean valid() {
+            return cubes.entrySet().stream().allMatch(cube -> cube.getValue() <= MAX.get(cube.getKey()));
         }
     }
 
@@ -47,21 +48,21 @@ public class Day2 implements Day {
             return new Game(0, List.of());
         }
 
+        // Part 1
+        boolean valid() {
+            return turns.stream().allMatch(Turn::valid);
+        }
+
         // Part 2
-        public int getPower() {
-            Map<String, Integer> min = new HashMap<>();
-            for (Turn turn : turns) {
-                turn.colors.keySet().forEach(color -> min.merge(color, turn.colors.get(color), Math::max));
-            }
-            return min.values().stream().reduce(1, (i, j) -> i * j);
+        int getPower() {
+            return turns.stream().flatMap(turn -> turn.cubes.entrySet().stream())
+                    .collect(Collectors.toMap(Entry::getKey, Entry::getValue, Math::max))
+                    .values().stream().reduce(1, (i, j) -> i * j);
         }
     }
 
     private void part1(List<String> input) {
-        Map<String, Integer> max = Map.of(RED, 12, GREEN, 13, BLUE, 14);
-        int sum = input.stream().map(Game::fromLine)
-                .filter(game -> game.turns.stream().allMatch(turn -> turn.valid(max)))
-                .mapToInt(Game::id).sum();
+        int sum = input.stream().map(Game::fromLine).filter(Game::valid).mapToInt(Game::id).sum();
         System.out.printf("day 2 part 1: %s%n", sum);
     }
 
