@@ -3,7 +3,6 @@ package advent2023;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Day3 implements Day {
@@ -14,8 +13,8 @@ public class Day3 implements Day {
 
     record Pos(int x, int y) {
         Stream<Pos> neighbors() {
-            return IntStream.range(-1, 2).boxed()
-                    .flatMap(dx -> IntStream.range(-1, 2).boxed()
+            return Stream.of(-1, 0, 1)
+                    .flatMap(dx -> Stream.of(-1, 0, 1)
                             .map(dy -> new Pos(x + dx, y + dy)));
         }
     }
@@ -31,7 +30,7 @@ public class Day3 implements Day {
     record Data(Map<Pos, Part> parts, Map<Pos, Character> symbols) {
         static final Pattern NUMBER_OR_SYMBOL = Pattern.compile("(\\d+)|([^0-9.])");
 
-        private static void parseRow(String row, int rowNum, Map<Pos, Part> parts, Map<Pos, Character> symbols) {
+        void parseRow(String row, int rowNum) {
             NUMBER_OR_SYMBOL.matcher(row).results().forEach(numOrSym -> {
                 String number = numOrSym.group(1);
                 if (number != null) {
@@ -49,7 +48,7 @@ public class Day3 implements Day {
         static Data fromInput(List<String> input) {
             Data data = new Data(new HashMap<>(), new HashMap<>());
             for (int y = 0; y < input.size(); y++) {
-                parseRow(input.get(y), y, data.parts, data.symbols);
+                data.parseRow(input.get(y), y);
             }
             return data;
         }
