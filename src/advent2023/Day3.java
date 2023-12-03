@@ -24,46 +24,37 @@ public class Day3 implements Day {
     }
 
     // Need the part's origin point to determine part uniqueness.
-    record Part(Pos origin, int number) {}
+    record Part(Pos origin, int number) {
+    }
 
     record Data(Map<Pos, Part> parts, Map<Pos, Character> symbols) {
         // parse data into part numbers and symbols
         static Data fromInput(List<String> input) {
             Map<Pos, Part> parts = new HashMap<>();
             Map<Pos, Character> symbols = new HashMap<>();
-            int val = 0;
-            List<Pos> positions = new ArrayList<>();
-            Pos partOrigin = null;
             for (int y = 0; y < input.size(); y++) {
+                String row = input.get(y);
                 for (int x = 0; x < input.get(0).length(); x++) {
-                    char c = input.get(y).charAt(x);
-                    if (!positions.isEmpty()) {
-                        if (Character.isDigit(c)) {
-                            val = val * 10 + (c - '0');
-                            positions.add(new Pos(x, y));
-                            continue;
-                        } else {
-                            for (Pos pos : positions) {
-                                parts.put(pos, new Part(partOrigin, val));
-                            }
-                            positions.clear();
-                            val = 0;
-                        }
-                    }
+                    char c = row.charAt(x);
                     if (Character.isDigit(c)) {
-                        val = c - '0';
-                        partOrigin = new Pos(x, y);
-                        positions.add(partOrigin);
+                        int val = 0;
+                        List<Pos> positions = new ArrayList<>();
+                        Pos partOrigin = new Pos(x, y);
+                        int partX = x;
+                        for (; partX < row.length(); partX++) {
+                            c = row.charAt(partX);
+                            if (!Character.isDigit(c)) {
+                                break;
+                            }
+                            val = (val * 10) + c - '0';
+                            positions.add(new Pos(partX, y));
+                        }
+                        Part part = new Part(partOrigin, val);
+                        positions.forEach(pos -> parts.put(pos, part));
+                        x = partX - 1;
                     } else if (c != '.') {
                         symbols.put(new Pos(x, y), c);
                     }
-                }
-                if (!positions.isEmpty()) {
-                    for (Pos pos : positions) {
-                        parts.put(pos, new Part(partOrigin, val));
-                    }
-                    positions.clear();
-                    val = 0;
                 }
             }
             return new Data(parts, symbols);
@@ -89,6 +80,8 @@ public class Day3 implements Day {
         }
     }
 
+    // day 3 part 1: (0.06221) 546312
+    // day 3 part 2: (0.01460) 87449461
     @Override
     public String part1(List<String> input) {
         return String.valueOf(Data.fromInput(input).allPartsSum());
