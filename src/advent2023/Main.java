@@ -1,6 +1,7 @@
 package advent2023;
 
 import java.net.URI;
+import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
@@ -14,23 +15,13 @@ public class Main {
 
     private static final String INPUT_URL = "https://adventofcode.com/2023/day/%d/input";
 
-    String readString(int day) {
+    List<String> readLines(int day) {
         try {
-            return CachingHttpReader.getData(new URI(INPUT_URL.formatted(day)).toURL()).trim();
+            URL url = new URI(INPUT_URL.formatted(day)).toURL();
+            return Arrays.asList(CachingHttpReader.getData(url).trim().split("\n"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    List<String> readLines(int day) {
-        return Arrays.asList(readString(day).split("\n"));
-    }
-
-    private void runDays() {
-        List<Day> days = List.of(new Day1(), new Day2(), new Day3());
-        days.stream()
-                .sorted(Comparator.comparing(Day::number))
-                .forEach(this::runDay);
     }
 
     record PartRun(String result, String duration) {
@@ -50,6 +41,13 @@ public class Main {
         PartRun part2 = PartRun.run(() -> day.part2(input));
         System.out.printf("day %s part 1: (%s) %s%n", day.number(), part1.duration, part1.result);
         System.out.printf("day %s part 2: (%s) %s%n", day.number(), part2.duration, part2.result);
+    }
+
+    private void runDays() {
+        List<Day> days = List.of(new Day1(), new Day2(), new Day3());
+        days.stream()
+                .sorted(Comparator.comparing(Day::number))
+                .forEach(this::runDay);
     }
 
     public static void main(String[] args) {
