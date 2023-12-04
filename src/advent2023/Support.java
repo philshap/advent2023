@@ -23,16 +23,4 @@ public interface Support {
         return IntStream.range(0, fullChunks + 1).mapToObj(
                 n -> source.subList(n * length, n == fullChunks ? size : (n + 1) * length));
     }
-
-    default String readString(int day) throws Exception {
-        return "";
-    }
-
-    default List<String> readLines(int day) throws Exception {
-        return List.of();
-    }
-
-    default boolean includeSlow() {
-        return true;
-    }
 }
