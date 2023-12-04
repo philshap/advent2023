@@ -33,7 +33,8 @@ public class Day1 implements Day {
     static final List<String> NAMES = List.of("one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
     static final Pattern NUMBER_OR_NAME = Pattern.compile("(\\d|%s)".formatted(String.join("|", NAMES)));
     static final List<String> NAMES_REVERSED = NAMES.stream().map(Day1::reverse).toList();
-    static final Pattern NUMBER_OR_NAME_REVERSED = Pattern.compile("(\\d|%s)".formatted(String.join("|", NAMES_REVERSED)));
+    static final Pattern NUMBER_OR_NAME_REVERSED =
+            Pattern.compile("(\\d|%s)".formatted(String.join("|", NAMES_REVERSED)));
 
     int findValue(String s, Pattern pattern, List<String> names) {
         return pattern.matcher(s).results().mapToInt(result ->{
@@ -57,6 +58,7 @@ public class Day1 implements Day {
     public static void main(String[] args) {
         Day day = new Day1();
         System.out.println(day.part1(List.of("1abc2", "pqr3stu8vwx", "a1b2c3d4e5f", "treb7uchet")));
-        System.out.println(day.part2(List.of("two1nine", "eightwothree", "abcone2threexyz", "xtwone3four", "4nineeightseven2", "zoneight234", "7pqrstsixteen")));
+        System.out.println(day.part2(List.of("two1nine", "eightwothree", "abcone2threexyz", "xtwone3four",
+                "4nineeightseven2", "zoneight234", "7pqrstsixteen")));
     }
 }
