@@ -24,8 +24,7 @@ public class Day3 implements Day {
     }
 
     // Need the part's origin point to determine part uniqueness.
-    record Part(Pos origin, int number) {
-    }
+    record Part(Pos origin, int number) { }
 
     record Data(Map<Pos, Part> parts, Map<Pos, Character> symbols) {
         // parse data into part numbers and symbols
@@ -80,8 +79,6 @@ public class Day3 implements Day {
         }
     }
 
-    // day 3 part 1: (0.06221) 546312
-    // day 3 part 2: (0.01460) 87449461
     @Override
     public String part1(List<String> input) {
         return String.valueOf(Data.fromInput(input).allPartsSum());
