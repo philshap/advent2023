@@ -1,6 +1,5 @@
 package advent2023;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.stream.IntStream;
 
