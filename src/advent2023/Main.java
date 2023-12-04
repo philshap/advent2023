@@ -38,13 +38,13 @@ public class Main {
     private void runDay(Day day) {
         List<String> input = readLines(day.number());
         PartRun part1 = PartRun.run(() -> day.part1(input));
-        PartRun part2 = PartRun.run(() -> day.part2(input));
         System.out.printf("day %s part 1: (%s) %s%n", day.number(), part1.duration, part1.result);
+        PartRun part2 = PartRun.run(() -> day.part2(input));
         System.out.printf("day %s part 2: (%s) %s%n", day.number(), part2.duration, part2.result);
     }
 
     private void runDays() {
-        List<Day> days = List.of(new Day1(), new Day2(), new Day3());
+        List<Day> days = List.of(new Day1(), new Day2(), new Day3(), new Day4());
         days.stream()
                 .sorted(Comparator.comparing(Day::number))
                 .forEach(this::runDay);
