@@ -27,7 +27,7 @@ public class Main {
     }
 
     private void runDays() {
-        List<Day> days = List.of(new Day1(), new Day2());
+        List<Day> days = List.of(new Day1(), new Day2(), new Day3());
         days.stream()
                 .sorted(Comparator.comparing(Day::number))
                 .forEach(this::runDay);
