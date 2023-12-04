@@ -28,18 +28,19 @@ public class Day3 implements Day {
     }
 
     record Data(Map<Pos, Part> parts, Map<Pos, Character> symbols) {
-        static final Pattern NUMBER_OR_SYMBOL = Pattern.compile("(\\d+)|([^0-9.])");
+        static final Pattern NUMBER_OR_SYMBOL = Pattern.compile("(\\d+|[^0-9.])");
 
         void parseRow(String row, int rowNum) {
-            NUMBER_OR_SYMBOL.matcher(row).results().forEach(numOrSym -> {
-                String number = numOrSym.group(1);
-                if (number != null) {
-                    Part part = new Part(Integer.parseInt(number));
-                    for (int x = numOrSym.start(1); x < numOrSym.end(1); x++) {
+            NUMBER_OR_SYMBOL.matcher(row).results().forEach(result -> {
+                String numOrSym = result.group();
+                char startChar = numOrSym.charAt(0);
+                if (Character.isDigit(startChar)) {
+                    Part part = new Part(Integer.parseInt(numOrSym));
+                    for (int x = result.start(); x < result.end(); x++) {
                         parts.put(new Pos(x, rowNum), part);
                     }
                 } else {
-                    symbols.put(new Pos(numOrSym.start(2), rowNum), numOrSym.group(2).charAt(0));
+                    symbols.put(new Pos(result.start(), rowNum), startChar);
                 }
             });
         }
