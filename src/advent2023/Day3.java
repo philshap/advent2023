@@ -1,11 +1,8 @@
 package advent2023;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -23,40 +20,38 @@ public class Day3 implements Day {
         }
     }
 
-    // Need the part's origin point to determine part uniqueness.
-    record Part(Pos origin, int number) { }
+    record Part(int number) {
+        @Override
+        public boolean equals(Object obj) {
+            // Need to distinguish between two different parts that have the same number.
+            return this == obj;
+        }
+    }
 
     record Data(Map<Pos, Part> parts, Map<Pos, Character> symbols) {
+        static final Pattern NUMBER_OR_SYMBOL = Pattern.compile("(\\d+)|([^0-9.])");
+
+        private static void parseRow(String row, int rowNum, Map<Pos, Part> parts, Map<Pos, Character> symbols) {
+            NUMBER_OR_SYMBOL.matcher(row).results().forEach(numOrSym -> {
+                String number = numOrSym.group(1);
+                if (number != null) {
+                    Part part = new Part(Integer.parseInt(number));
+                    for (int x = numOrSym.start(1); x < numOrSym.end(1); x++) {
+                        parts.put(new Pos(x, rowNum), part);
+                    }
+                } else {
+                    symbols.put(new Pos(numOrSym.start(2), rowNum), numOrSym.group(2).charAt(0));
+                }
+            });
+        }
+
         // parse data into part numbers and symbols
         static Data fromInput(List<String> input) {
-            Map<Pos, Part> parts = new HashMap<>();
-            Map<Pos, Character> symbols = new HashMap<>();
+            Data data = new Data(new HashMap<>(), new HashMap<>());
             for (int y = 0; y < input.size(); y++) {
-                String row = input.get(y);
-                for (int x = 0; x < input.get(0).length(); x++) {
-                    char c = row.charAt(x);
-                    if (Character.isDigit(c)) {
-                        int val = 0;
-                        List<Pos> positions = new ArrayList<>();
-                        Pos partOrigin = new Pos(x, y);
-                        int partX = x;
-                        for (; partX < row.length(); partX++) {
-                            c = row.charAt(partX);
-                            if (!Character.isDigit(c)) {
-                                break;
-                            }
-                            val = (val * 10) + c - '0';
-                            positions.add(new Pos(partX, y));
-                        }
-                        Part part = new Part(partOrigin, val);
-                        positions.forEach(pos -> parts.put(pos, part));
-                        x = partX - 1;
-                    } else if (c != '.') {
-                        symbols.put(new Pos(x, y), c);
-                    }
-                }
+                parseRow(input.get(y), y, data.parts, data.symbols);
             }
-            return new Data(parts, symbols);
+            return data;
         }
 
         Stream<Part> partsNear(Pos pos) {
@@ -91,15 +86,15 @@ public class Day3 implements Day {
 
     public static void main(String[] args) {
         var input = List.of("467..114..",
-                "...*......",
-                "..35..633.",
-                "......#...",
-                "617*......",
-                ".....+.58.",
-                "..592.....",
-                "......755.",
-                "...$.*....",
-                ".664.598..");
+                            "...*......",
+                            "..35..633.",
+                            "......#...",
+                            "617*......",
+                            ".....+.58.",
+                            "..592.....",
+                            "......755.",
+                            "...$.*....",
+                            ".664.598..");
         System.out.println(new Day3().part1(input));
         System.out.println(new Day3().part2(input));
     }
