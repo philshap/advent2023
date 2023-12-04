@@ -1,6 +1,9 @@
 package advent2023;
 
 import java.util.List;
+import java.util.regex.MatchResult;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Day1 implements Day {
@@ -10,39 +13,18 @@ public class Day1 implements Day {
         return 1;
     }
 
-    record Match(int index, int value) {
-        private static Match findMatch(String s, List<String> toMatch, int i) {
-            for (int j = 0; j < toMatch.size(); j++) {
-                if (s.substring(i).startsWith(toMatch.get(j))) {
-                    return new Match(i, j + 1);
-                }
-            }
-            return null;
-        }
+    static final Pattern NUMBER = Pattern.compile("(\\d)");
 
-        static Match firstMatch(String s, List<String> toMatch) {
-            Match match = null;
-            for (int i = 0; i < s.length() && match == null; i++) {
-                match = findMatch(s, toMatch, i);
-            }
-            return match != null ? match : new Match(s.length(), 0);
-        }
-
-        static Match lastMatch(String s, List<String> toMatch) {
-            Match match = null;
-            for (int i = s.length() - 1; i >= 0 && match == null; i--) {
-                match = findMatch(s, toMatch, i);
-            }
-            return match != null ? match : new Match(-1, 0);
-        }
+    static String reverse(String s) {
+        return new StringBuilder(s).reverse().toString();
     }
 
-    static final List<String> DIGITS = IntStream.range(1, 10).mapToObj(String::valueOf).toList();
+    int findDigit(String s) {
+        return NUMBER.matcher(s).results().map(MatchResult::group).map(Integer::parseInt).findFirst().orElseThrow();
+    }
 
     private int calibrationValue(String s) {
-        int tens = Match.firstMatch(s, DIGITS).value;
-        int ones = Match.lastMatch(s, DIGITS).value;
-        return tens * 10 + ones;
+        return findDigit(s) * 10 + findDigit(reverse(s));
     }
 
     public String part1(List<String> input) {
@@ -51,15 +33,22 @@ public class Day1 implements Day {
     }
 
     static final List<String> NAMES = List.of("one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
+    static final Pattern NUMBER_OR_NAME = Pattern.compile("(\\d|%s)".formatted(String.join("|", NAMES)));
+    static final List<String> NAMES_REVERSED = NAMES.stream().map(Day1::reverse).toList();
+    static final Pattern NUMBER_OR_NAME_REVERSED = Pattern.compile("(\\d|%s)".formatted(String.join("|", NAMES_REVERSED)));
+
+    int findValue(String s, Pattern pattern, List<String> names) {
+        return pattern.matcher(s).results().mapToInt(result ->{
+            if (Character.isDigit(result.group().charAt(0))) {
+                return Integer.parseInt(result.group());
+            }
+            return names.indexOf(result.group()) + 1;
+        }).findFirst().orElseThrow();
+    }
 
     private int calibrationValue2(String s) {
-        Match firstDigit = Match.firstMatch(s, DIGITS);
-        Match lastDigit = Match.lastMatch(s, DIGITS);
-        Match firstName = Match.firstMatch(s, NAMES);
-        Match lastName = Match.lastMatch(s, NAMES);
-        int tens = (firstDigit.index < firstName.index) ? firstDigit.value : firstName.value;
-        int ones = (lastDigit.index > lastName.index) ? lastDigit.value : lastName.value;
-        return tens * 10 + ones;
+        return findValue(s, NUMBER_OR_NAME, NAMES) * 10 +
+               findValue(reverse(s), NUMBER_OR_NAME_REVERSED, NAMES_REVERSED);
     }
 
     public String part2(List<String> input) {
