@@ -37,11 +37,11 @@ public class Day1 implements Day {
             Pattern.compile("(\\d|%s)".formatted(String.join("|", NAMES_REVERSED)));
 
     int findValue(String s, Pattern pattern, List<String> names) {
-        return pattern.matcher(s).results().mapToInt(result ->{
-            if (Character.isDigit(result.group().charAt(0))) {
-                return Integer.parseInt(result.group());
+        return pattern.matcher(s).results().map(MatchResult::group).mapToInt(group ->{
+            if (Character.isDigit(group.charAt(0))) {
+                return Integer.parseInt(group);
             }
-            return names.indexOf(result.group()) + 1;
+            return names.indexOf(group) + 1;
         }).findFirst().orElseThrow();
     }
 
