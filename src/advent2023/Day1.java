@@ -37,7 +37,7 @@ public class Day1 implements Day {
             Pattern.compile("(\\d|%s)".formatted(String.join("|", NAMES_REVERSED)));
 
     int findValue(String s, Pattern pattern, List<String> names) {
-        return pattern.matcher(s).results().map(MatchResult::group).mapToInt(group ->{
+        return pattern.matcher(s).results().map(MatchResult::group).mapToInt(group -> {
             if (Character.isDigit(group.charAt(0))) {
                 return Integer.parseInt(group);
             }
@@ -47,7 +47,7 @@ public class Day1 implements Day {
 
     private int calibrationValue2(String s) {
         return findValue(s, NUMBER_OR_NAME, NAMES) * 10 +
-               findValue(reverse(s), NUMBER_OR_NAME_REVERSED, NAMES_REVERSED);
+                findValue(reverse(s), NUMBER_OR_NAME_REVERSED, NAMES_REVERSED);
     }
 
     public String part2(List<String> input) {
@@ -59,6 +59,6 @@ public class Day1 implements Day {
         Day day = new Day1();
         System.out.println(day.part1(List.of("1abc2", "pqr3stu8vwx", "a1b2c3d4e5f", "treb7uchet")));
         System.out.println(day.part2(List.of("two1nine", "eightwothree", "abcone2threexyz", "xtwone3four",
-                "4nineeightseven2", "zoneight234", "7pqrstsixteen")));
+                                             "4nineeightseven2", "zoneight234", "7pqrstsixteen")));
     }
 }
