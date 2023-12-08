@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.LongStream;
-import java.util.stream.Stream;
 
 public class Day5 implements Day {
     @Override
@@ -43,9 +41,8 @@ public class Day5 implements Day {
     }
 
     record Data(List<Long> seeds, List<RangeMap> maps) {
-        static final Pattern NUMBER = Pattern.compile("(\\d+)");
         static Data fromLines(List<String> lines) {
-            List<Long> seeds = NUMBER.matcher(lines.get(0)).results().map(MatchResult::group).map(Long::parseLong).toList();
+            List<Long> seeds = Support.longs(lines.getFirst());
             RangeMap rangeMap = null;
             List<RangeMap> maps = new ArrayList<>();
             for (int i = 1; i < lines.size(); i++) {
@@ -72,8 +69,6 @@ public class Day5 implements Day {
             return seeds.stream().mapToLong(i -> i).map(this::plantSeed).sorted();
         }
     }
-
-    // 147655913 too low
 
     @Override
     public String part1(List<String> input) {

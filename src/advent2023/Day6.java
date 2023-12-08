@@ -41,19 +41,15 @@ public class Day6 implements Day {
     record Race2(long time, long distance) {
 
         static long readLong(String line) {
-            return Support.longs(line.replace(" ", "")).get(0);
+            return Support.longs(line.replace(" ", "")).getFirst();
         }
 
         static Race2 fromLines(List<String> lines) {
             return new Race2(readLong(lines.get(0)), readLong(lines.get(1)));
         }
 
-        long distanceForTime(long pressTime) {
-            return (time - pressTime) * pressTime;
-        }
-
         boolean winning(long pressTime) {
-            return distanceForTime(pressTime) > distance;
+            return (time - pressTime) * pressTime > distance;
         }
 
         boolean lowEdge(long pressTime) {

@@ -85,7 +85,7 @@ public class Day7 implements Day {
         }
     }
 
-    private static int getWinnings(List<String> input, boolean useJokers) {
+    int getWinnings(List<String> input, boolean useJokers) {
         var hands = input.stream().map(line -> Hand.fromLine(line, useJokers)).sorted(Comparator.reverseOrder()).toList();
         return IntStream.range(0, hands.size()).map(i -> (i + 1) * hands.get(i).bid).sum();
     }
