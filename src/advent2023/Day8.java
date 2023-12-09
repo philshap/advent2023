@@ -13,7 +13,7 @@ public class Day8 implements Day {
     }
 
     record Exits(String left, String right) {
-        String get(char turn) {
+        String toExit(char turn) {
             return turn == 'L' ? left : right;
         }
     }
@@ -34,7 +34,7 @@ public class Day8 implements Day {
         int step = 0;
         String node = "AAA";
         while (!node.equals("ZZZ")) {
-            node = map.get(node).get(turns.charAt(step++ % turns.length()));
+            node = map.get(node).toExit(turns.charAt(step++ % turns.length()));
         }
         return String.valueOf(step);
     }
@@ -53,7 +53,7 @@ public class Day8 implements Day {
     int stepsToEnd(String node, String turns, Map<String, Exits> map) {
         int step = 0;
         while (!node.endsWith("Z")) {
-            node = map.get(node).get(turns.charAt(step++ % turns.length()));
+            node = map.get(node).toExit(turns.charAt(step++ % turns.length()));
         }
         return step;
     }
@@ -62,12 +62,10 @@ public class Day8 implements Day {
     public String part2(List<String> input) {
         String turns = input.getFirst();
         var map = parseMap(input.subList(2, input.size()));
-        List<String> starts = map.keySet().stream().filter(node -> node.endsWith("A")).toList();
-        List<Integer> steps = starts.stream().map(node -> stepsToEnd(node, turns, map)).toList();
-        long lcm = 1;
-        for (long step : steps) {
-            lcm = LCM(lcm, step);
-        }
+        long lcm = map.keySet().stream()
+                .filter(node -> node.endsWith("A"))
+                .mapToLong(node -> stepsToEnd(node, turns, map))
+                .reduce(1, Day8::LCM);
 
         return String.valueOf(lcm);
     }
