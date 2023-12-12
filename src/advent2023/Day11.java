@@ -37,11 +37,13 @@ public class Day11 implements Day {
             int y = points.l().y;
             Pos p2 = points.r();
             while (x != p2.x || y != p2.y) {
-                if (Math.abs(x - p2.x) > Math.abs(y - p2.y)) {
-                    x += ((int) Math.signum(p2.x - x));
+                int dx = p2.x - x;
+                int dy = p2.y - y;
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    x += (int) Math.signum(dx);
                     length += nonEmptyCols.contains(x) ? 1 : emptySize;
                 } else {
-                    y += (int) Math.signum(p2.y - y);
+                    y += (int) Math.signum(dy);
                     length += nonEmptyRows.contains(y) ? 1 : emptySize;
                 }
             }
@@ -49,14 +51,14 @@ public class Day11 implements Day {
         }
 
         private long allPathsSum() {
-            return combos(galaxies).mapToLong(this::lineLength).sum();
+            return pairCombos(galaxies).mapToLong(this::lineLength).sum();
         }
     }
 
-    static Stream<Pair<Pos, Pos>> combos(Collection<Pos> positions) {
-        List<Pos> list = List.copyOf(positions);
-        return IntStream.range(0, positions.size()).boxed()
-                        .flatMap(i -> IntStream.range(i + 1, positions.size()).boxed()
+    static <T> Stream<Pair<T, T>> pairCombos(Collection<T> elements) {
+        List<T> list = List.copyOf(elements);
+        return IntStream.range(0, elements.size()).boxed()
+                        .flatMap(i -> IntStream.range(i + 1, elements.size()).boxed()
                                                .map(j -> Pair.of(list.get(i), list.get(j))));
     }
 
