@@ -2,7 +2,6 @@ package advent2023;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -21,22 +20,20 @@ public class Day13 implements Day {
             return new Pattern(lines, columns, findMirror(lines, 0), findMirror(columns, 0));
         }
 
-        static Integer mirrorAtIndex(int i, List<String> values) {
+        static boolean mirrorAtIndex(int i, List<String> values) {
             int before = i - 1;
             int after = i;
             while (values.get(before--).equals(values.get(after++))) {
                 if (before == -1 || after == values.size()) {
-                    return i;
+                    return true;
                 }
             }
-            return null;
+            return false;
         }
 
         static int findMirror(List<String> list, int skip) {
             return IntStream.range(1, list.size())
-                            .filter(i -> i != skip)
-                            .mapToObj(i -> mirrorAtIndex(i, list))
-                            .filter(Objects::nonNull)
+                            .filter(i -> i != skip && mirrorAtIndex(i, list))
                             .findFirst().orElse(0);
         }
 
